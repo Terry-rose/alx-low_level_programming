@@ -37,4 +37,7 @@ void times_table(void);
 int _putchar(char c);
 int _abs(int n);
 
+int _putchar(char c);
+int _isalpha(int c);
+
 #endif /* MAIN_H */
