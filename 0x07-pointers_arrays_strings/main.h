@@ -3,5 +3,10 @@
 
 char *_memset(char *s, char b, unsigned int n);
 
+char *_memset(char *s, char b, unsigned int n);
+char *_memcpy(char *dest, char *src, unsigned int n);
+int _strcmp(const char *str1, const char *str2);
+
 #define MAX_SIZE 100
+#define PI 3.14159265359
 #endif /* MAIN_H */
