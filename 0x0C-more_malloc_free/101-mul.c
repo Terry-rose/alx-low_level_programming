@@ -1,41 +1,61 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void multiply(char num1[], char num2[]) {
-    int len1 = 0, len2 = 0, i, j, k, carry = 0;
-    int *result;
-    
-    while (num1[len1] != '\0') len1++;
-    while (num2[len2] != '\0') len2++;
-    
+int is_digit(char c) {
+    return (c >= '0' && c <= '9');
+}
+
+int multiply(char *num1, char *num2) {
+    int len1 = 0, len2 = 0;
+    int *result, i, j, carry = 0;
+
+    while (num1[len1] != '\0') {
+        if (!is_digit(num1[len1])) {
+            printf("Error\n");
+            exit(98);
+        }
+        len1++;
+    }
+
+    while (num2[len2] != '\0') {
+        if (!is_digit(num2[len2])) {
+            printf("Error\n");
+            exit(98);
+        }
+        len2++;
+    }
+
     result = malloc(sizeof(int) * (len1 + len2));
-    
+    if (result == NULL) {
+        printf("Error\n");
+        exit(98);
+    }
+
     for (i = 0; i < len1 + len2; i++) {
         result[i] = 0;
     }
-    
+
     for (i = len1 - 1; i >= 0; i--) {
+        int digit1 = num1[i] - '0';
         carry = 0;
-        for (j = len2 - 1, k = i + len2; j >= 0; j--, k--) {
-            int temp = (num1[i] - '0') * (num2[j] - '0') + result[k] + carry;
-            result[k] = temp % 10;
+        for (j = len2 - 1; j >= 0; j--) {
+            int digit2 = num2[j] - '0';
+            int temp = result[i + j + 1] + (digit1 * digit2) + carry;
+            result[i + j + 1] = temp % 10;
             carry = temp / 10;
         }
-        result[k] += carry;
+        result[i + j + 1] += carry;
     }
-    
+
     for (i = 0; i < len1 + len2; i++) {
-        if (result[i] != 0) {
-            break;
+        if (!(i == 0 && result[i] == 0)) {
+            printf("%d", result[i]);
         }
     }
-    
-    for (; i < len1 + len2; i++) {
-        printf("%d", result[i]);
-    }
     printf("\n");
-    
+
     free(result);
+    return 0;
 }
 
 int main(int argc, char *argv[]) {
@@ -43,26 +63,9 @@ int main(int argc, char *argv[]) {
         printf("Error\n");
         return 98;
     }
-    
-    char *num1 = argv[1];
-    char *num2 = argv[2];
-    
-    for (int i = 0; num1[i] != '\0'; i++) {
-        if (num1[i] < '0' || num1[i] > '9') {
-            printf("Error\n");
-            return 98;
-        }
-    }
-    
-    for (int i = 0; num2[i] != '\0'; i++) {
-        if (num2[i] < '0' || num2[i] > '9') {
-            printf("Error\n");
-            return 98;
-        }
-    }
-    
-    multiply(num1, num2);
-    
+
+    multiply(argv[1], argv[2]);
+
     return 0;
 }
 
