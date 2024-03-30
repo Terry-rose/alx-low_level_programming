@@ -1,8 +1,8 @@
-SRC = $(wildcard *.c)
-OBJ = $(SRC:.c=.o)
-NAME = school
-RM = rm -f
-CFLAGS = -Wall -Werror -Wextra -pedantic
+SRC := $(wildcard *.c)
+OBJ := $(SRC:.c=.o)
+NAME := school
+RM := rm -f
+CC := gcc
 
 .PHONY: all clean oclean fclean re
 
@@ -12,7 +12,7 @@ $(NAME): $(OBJ)
 	$(CC) -o $@ $(OBJ)
 
 %.o: %.c
-	$(CC) -c $< -o $@ $(CFLAGS)
+	$(CC) -c $< -o $@ -Wall -Werror -Wextra -pedantic
 
 clean:
 	@$(RM) *~ $(NAME)
@@ -27,4 +27,33 @@ fclean: clean oclean
 	@echo "Cleaning executable"
 
 re: fclean all
+
+# Check for duplicates in SRC
+ifeq ($(words $(SRC)),$(words $(sort $(SRC))))
+else
+    $(error Duplicate source files detected in SRC)
+endif
+
+# Check for hardcoded filenames
+ifeq ($(findstring school.o,$(OBJ)),)
+    $(error school.o not found in OBJ)
+endif
+
+ifeq ($(findstring main.o,$(OBJ)),)
+    $(error main.o not found in OBJ)
+endif
+
+# Check for single usage of NAME and RM
+ifneq ($(words $(filter school,$(MAKEFILE_LIST))),1)
+    $(error Multiple occurrences of school found in Makefile)
+endif
+
+ifneq ($(words $(filter rm,$(MAKEFILE_LIST))),1)
+    $(error Multiple occurrences of rm found in Makefile)
+endif
+
+# Check for single usage of CFLAGS and its constituents
+ifeq ($(words $(filter -Wall -Werror -Wextra -pedantic,$(MAKEFILE_LIST))),4)
+    $(error Multiple occurrences of CFLAGS constituents found in Makefile)
+endif
 
