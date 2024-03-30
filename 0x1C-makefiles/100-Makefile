@@ -1,0 +1,28 @@
+CC = gcc
+SRC = $(wildcard *.c)
+OBJ = $(SRC:.c=.o)
+NAME = school
+
+.PHONY: all clean oclean fclean re
+
+all: $(NAME)
+
+$(NAME): $(OBJ)
+	$(CC) -o $@ $(OBJ)
+
+%.o: %.c
+	$(CC) -c $< -o $@ -Wall -Werror -Wextra -pedantic
+
+clean:
+	@$(RM) *~ $(NAME)
+	@echo "Cleaning temporary files"
+
+oclean:
+	@$(RM) $(OBJ)
+	@echo "Cleaning object files"
+
+fclean: clean oclean
+	@$(RM) $(NAME)
+	@echo "Cleaning executable"
+
+re: fclean all
